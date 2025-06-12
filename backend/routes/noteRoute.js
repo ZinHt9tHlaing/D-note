@@ -1,6 +1,6 @@
 const express = require("express");
 const { body } = require("express-validator");
-const { getNotes, createNote } = require("../controllers/noteController");
+const { getNotes, createNote, getDetailNote } = require("../controllers/noteController");
 
 const router = express.Router();
 
@@ -22,5 +22,7 @@ router.post(
 );
 
 router.get("/notes", getNotes);
+
+router.get("/note/:id", getDetailNote);
 
 module.exports = router;

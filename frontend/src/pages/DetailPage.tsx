@@ -1,26 +1,63 @@
-import { Link } from "react-router";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router";
+import Loading from "../components/Loading";
+import { CalendarDays } from "lucide-react";
+import { UserIcon } from "@heroicons/react/16/solid";
+
+type Note = {
+  title: string;
+  description: string;
+  creator: string;
+  createdAt: string;
+};
 
 const DetailPage = () => {
+  const { id } = useParams();
+  const [note, setNote] = useState<Note | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  const getDetailNote = async () => {
+    setIsLoading(true);
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/note/${id}`);
+    const data = await response.json();
+    setNote(data);
+    setIsLoading(false);
+  };
+
+  useEffect(() => {
+    getDetailNote();
+  }, []);
+
+  const formattedDate = note?.createdAt
+    ? new Date(note.createdAt).toISOString().split("T")[0]
+    : "";
+
   return (
-    <section className="px-10">
-      <div className="flex justify-end items-center">
-        <Link
-          to={"/"}
-          className="bg-white text-teal-600 border-2 border-teal-600 px-2 py-1 rounded hover:bg-slate-100 active:scale-90 duration-200"
-        >
-          Back
-        </Link>
-      </div>
-      <div className="mt-5 p-3 border-t-4 border-t-teal-600 shadow-lg">
-        <h3 className="text-3xl font-semibold mb-2">Hello</h3>
-        <p className="text-base">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto
-          neque corrupti repellendus deserunt, nemo iure velit dolores
-          dignissimos esse illo qui error, aspernatur asperiores eveniet, eius
-          cumque! Delectus, illo numquam.
-        </p>
-      </div>
-    </section>
+    <>
+      {isLoading && <Loading />}
+      <section className="px-10">
+        <div className="flex justify-end items-center">
+          <Link
+            to={"/"}
+            className="bg-white text-teal-600 border-2 border-teal-600 px-2 py-1 rounded hover:bg-slate-100 active:scale-90 duration-200"
+          >
+            Back
+          </Link>
+        </div>
+        <div className="mt-5 p-3 border-t-4 border-t-teal-600 shadow-lg">
+          <h3 className="text-3xl font-semibold mb-2">{note?.title}</h3>
+          <div className="my-2">
+            <p className="flex gap-1 text-sm font-medium text-gray-600">
+              <UserIcon className="size-4" /> {note?.creator}
+            </p>
+            <p className="flex gap-1 text-sm font-medium text-gray-600">
+              <CalendarDays className="size-4" /> {formattedDate}
+            </p>
+          </div>
+          <p className="text-base text-slate-700">{note?.description}</p>
+        </div>
+      </section>
+    </>
   );
 };
 

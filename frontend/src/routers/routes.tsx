@@ -4,11 +4,13 @@ import EditPage from "../pages/EditPage";
 import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/HomePage";
 import DetailPage from "../pages/DetailPage";
+import ErrorMessage from "../components/ErrorMessage";
 
 export const routers = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorMessage />,
     children: [
       {
         index: true,
@@ -23,7 +25,7 @@ export const routers = createBrowserRouter([
         element: <EditPage />,
       },
       {
-        path: "/notes/:id",
+        path: "/note/:id",
         element: <DetailPage />,
       },
     ],
