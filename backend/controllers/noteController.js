@@ -64,3 +64,22 @@ exports.deleteNote = async (req, res) => {
     res.status(500).json({ message: "Something went wrong" });
   }
 };
+
+exports.updateNote = async (req, res) => {
+  const { id } = req.params;
+  const { title, description, note_id } = req.body;
+
+  try {
+    const note = await Note.findById(note_id);
+    if (!note) {
+      return res.status(404).json({ message: "Note not found!" });
+    }
+    note.title = title;
+    note.description = description;
+    await note.save();
+    res.status(200).json({ message: "Note updated!" });
+  } catch (error) {
+    console.log("error", error);
+    res.status(500).json({ message: "Something went wrong" });
+  }
+};

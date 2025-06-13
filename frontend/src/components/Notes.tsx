@@ -76,20 +76,20 @@ const Notes = ({ note }: NoteFormProps) => {
             width={20}
             height={20}
             onClick={deleteNoteHandler}
-            className="text-red-600 cursor-pointer active:scale-90 duration-200"
+            className="text-red-600 cursor-pointer hover:scale-125 active:scale-100 duration-200"
           />
-          <Link to={"/edit/1"}>
+          <Link to={`/edit/${_id}`}>
             <PencilSquareIcon
               width={22}
               height={22}
-              className="text-teal-600 active:scale-90 duration-200"
+              className="text-teal-600 hover:scale-125 active:scale-100 duration-200"
             />
           </Link>
           <Link to={`/note/${_id}`}>
             <EyeIcon
               width={25}
               height={25}
-              className="active:scale-90 duration-200"
+              className="hover:scale-125 active:scale-100 duration-200"
             />
           </Link>
         </div>

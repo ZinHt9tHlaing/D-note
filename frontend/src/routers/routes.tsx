@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router";
-import CreatePage from "../pages/CreatePage";
-import EditPage from "../pages/EditPage";
+import CreateNoteForm from "../pages/CreateNoteForm";
+import EditNoteForm from "../pages/EditNoteForm";
 import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/HomePage";
 import DetailPage from "../pages/DetailPage";
@@ -18,11 +18,11 @@ export const routers = createBrowserRouter([
       },
       {
         path: "/create",
-        element: <CreatePage />,
+        element: <CreateNoteForm />,
       },
       {
         path: "/edit/:id",
-        element: <EditPage />,
+        element: <EditNoteForm />,
       },
       {
         path: "/note/:id",

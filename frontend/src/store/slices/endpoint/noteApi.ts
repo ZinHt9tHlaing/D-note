@@ -1,6 +1,7 @@
 import type {
   CreateNoteType,
   DetailNoteType,
+  EditNoteType,
   NoteType,
 } from "../../../types/noteType";
 import { apiSlice } from "../apiSlice";
@@ -32,9 +33,18 @@ const noteApiSlice = apiSlice.injectEndpoints({
       }),
       invalidatesTags: ["Note"],
     }),
+    updateNote: builder.mutation<void, { id: string; data: EditNoteType }>({
+      query: ({ id, data }) => ({
+        url: `/update-note/${id}`,
+        method: "PUT",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Note"],
+    }),
     deleteNote: builder.mutation({
       query: (id: string) => ({
-        url: `/note-delete/${id}`,
+        url: `/delete-note/${id}`,
         method: "DELETE",
         credentials: "include",
       }),
@@ -47,5 +57,6 @@ export const {
   useGetNotesQuery,
   useGetDetailNoteQuery,
   useCreateNoteMutation,
+  useUpdateNoteMutation,
   useDeleteNoteMutation,
 } = noteApiSlice;

@@ -2,21 +2,17 @@ import { Field, Form, Formik, type FormikHelpers } from "formik";
 import * as yup from "yup";
 
 // formik custom error message
-import StyledErrorMessage from "./StyledErrorMessage";
 import { useCreateNoteMutation } from "../store/slices/endpoint/noteApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router";
-
-type NoteFormProps = {
-  isCreate: boolean;
-};
+import StyledErrorMessage from "../components/StyledErrorMessage";
 
 type FormValues = {
   title: string;
   description: string;
 };
 
-const NoteForm = ({ isCreate }: NoteFormProps) => {
+const CreateNoteForm = () => {
   const navigate = useNavigate();
   const [createNote, { isLoading }] = useCreateNoteMutation();
 
@@ -39,7 +35,7 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
     title: yup
       .string()
       .min(3, "Title must be at least 3 characters")
-      .max(30, "Title must be less than 30 characters")
+      .max(100, "Title must be less than 100 characters")
       .required("Title is required"),
     description: yup
       .string()
@@ -51,23 +47,21 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
     values: FormValues,
     { resetForm }: FormikHelpers<FormValues>
   ) => {
-    if (isCreate) {
-      try {
-        await createNote(values).unwrap();
-        resetForm();
-        toast.success("Note create successful!");
-        navigate("/");
-      } catch (err) {
-        console.error("Failed to create post", err);
-        toast.error("Note create failed!");
-      }
+    try {
+      await createNote(values).unwrap();
+      resetForm();
+      toast.success("Note create successful!");
+      navigate("/");
+    } catch (err) {
+      console.error("Failed to create post", err);
+      toast.error("Note create failed!");
     }
   };
 
   return (
-    <section>
+    <section className="px-10">
       <h1 className="text-2xl font-semibold mb-5 text-center">
-        {isCreate ? "Create a new note." : "Edit your note."}
+        Create a new note.
       </h1>
       <Formik
         initialValues={initialValues}
@@ -109,7 +103,7 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
               {isLoading && (
                 <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
               )}
-              {isCreate ? "Create" : "Update"}
+              Create
             </button>
           </Form>
         )}
@@ -118,4 +112,4 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
   );
 };
 
-export default NoteForm;
+export default CreateNoteForm;

@@ -13,3 +13,5 @@ export interface CreateNoteType {
   title: string;
   description: string;
 }
+
+export type EditNoteType = CreateNoteType;

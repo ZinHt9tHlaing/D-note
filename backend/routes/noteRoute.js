@@ -5,6 +5,7 @@ const {
   getDetailNote,
   deleteNote,
   getAllNotes,
+  updateNote,
 } = require("../controllers/noteController");
 
 const router = express.Router();
@@ -16,8 +17,8 @@ router.post(
       .trim()
       .isLength({ min: 3 })
       .withMessage("Title must be at least 3 characters")
-      .isLength({ max: 30 })
-      .withMessage("Title must be less than 30 characters"),
+      .isLength({ max: 100 })
+      .withMessage("Title must be less than 100 characters"),
     body("description")
       .trim()
       .isLength({ min: 5 })
@@ -30,6 +31,8 @@ router.get("/notes", getAllNotes);
 
 router.get("/note/:id", getDetailNote);
 
-router.delete("/note-delete/:id", deleteNote);
+router.put("/update-note/:id", updateNote);
+
+router.delete("/delete-note/:id", deleteNote);
 
 module.exports = router;

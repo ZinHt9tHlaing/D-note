@@ -6,7 +6,7 @@ const NoteSchema = new Schema(
       type: String,
       required: true,
       minLength: 3,
-      maxLength: 30,
+      maxLength: 100,
     },
     description: {
       type: String,
