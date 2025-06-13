@@ -1,8 +1,11 @@
-import { Field, Form, Formik } from "formik";
+import { Field, Form, Formik, type FormikHelpers } from "formik";
 import * as yup from "yup";
 
 // formik custom error message
 import StyledErrorMessage from "./StyledErrorMessage";
+import { useCreateNoteMutation } from "../store/slices/endpoint/noteApi";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router";
 
 type NoteFormProps = {
   isCreate: boolean;
@@ -14,6 +17,9 @@ type FormValues = {
 };
 
 const NoteForm = ({ isCreate }: NoteFormProps) => {
+  const navigate = useNavigate();
+  const [createNote, { isLoading }] = useCreateNoteMutation();
+
   const initialValues: FormValues = { title: "", description: "" };
 
   // const validate = (values: FormValues) => {
@@ -41,8 +47,21 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
       .required("Description is required"),
   });
 
-  const handleSubmit = (values: FormValues) => {
-    console.log("Form values:", values);
+  const handleSubmit = async (
+    values: FormValues,
+    { resetForm }: FormikHelpers<FormValues>
+  ) => {
+    if (isCreate) {
+      try {
+        await createNote(values).unwrap();
+        resetForm();
+        toast.success("Note create successful!");
+        navigate("/");
+      } catch (err) {
+        console.error("Failed to create post", err);
+        toast.error("Note create failed!");
+      }
+    }
   };
 
   return (
@@ -55,7 +74,7 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
         validationSchema={NoteFormSchema}
         onSubmit={handleSubmit}
       >
-        {({ errors }) => (
+        {() => (
           <Form className="space-y-3">
             <div className="">
               <label htmlFor="title" className="font-medium block">
@@ -87,9 +106,9 @@ const NoteForm = ({ isCreate }: NoteFormProps) => {
               type="submit"
               className="flex justify-center w-full items-center text-lg gap-2 text-white disabled:cursor-not-allowed disabled:bg-teal-700 bg-teal-600 cursor-pointer py-1 px-2 rounded border-2 border-teal-600 active:scale-95 duration-200"
             >
-              {/* {isLoading && (
-        <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
-        )} */}
+              {isLoading && (
+                <div className="w-6 h-6 border-4 border-white border-t-transparent rounded-full animate-spin" />
+              )}
               {isCreate ? "Create" : "Update"}
             </button>
           </Form>

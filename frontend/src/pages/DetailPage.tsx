@@ -1,32 +1,12 @@
-import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router";
 import Loading from "../components/Loading";
 import { CalendarDays } from "lucide-react";
 import { UserIcon } from "@heroicons/react/16/solid";
-
-type Note = {
-  title: string;
-  description: string;
-  creator: string;
-  createdAt: string;
-};
+import { useGetDetailNoteQuery } from "../store/slices/endpoint/noteApi";
 
 const DetailPage = () => {
   const { id } = useParams();
-  const [note, setNote] = useState<Note | null>(null);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  const getDetailNote = async () => {
-    setIsLoading(true);
-    const response = await fetch(`${import.meta.env.VITE_API_URL}/note/${id}`);
-    const data = await response.json();
-    setNote(data);
-    setIsLoading(false);
-  };
-
-  useEffect(() => {
-    getDetailNote();
-  }, []);
+  const { data: note, isLoading } = useGetDetailNoteQuery(id!);
 
   const formattedDate = note?.createdAt
     ? new Date(note.createdAt).toISOString().split("T")[0]
@@ -34,7 +14,7 @@ const DetailPage = () => {
 
   return (
     <>
-      {isLoading && <Loading />}
+      {isLoading && <Loading name="Note" />}
       <section className="px-10">
         <div className="flex justify-end items-center">
           <Link
