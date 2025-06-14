@@ -9,11 +9,10 @@ const Navbar = () => {
         </h1>
       </Link>
       <div>
-        <Link
-          to={"/create"}
-          className="text-teal-600 border-2 border-teal-600 px-2 py-1 rounded hover:shadow-md hover:shadow-teal-200 active:scale-90 duration-200"
-        >
-          Create Note
+        <Link to={"/create"}>
+          <button className="text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
+            Share Note
+          </button>
         </Link>
       </div>
     </nav>

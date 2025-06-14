@@ -7,16 +7,21 @@ import {
 import { toast } from "react-toastify";
 import { useNavigate, useParams } from "react-router";
 import StyledErrorMessage from "../components/StyledErrorMessage";
+import { HardDriveUpload } from "lucide-react";
+import { useRef, useState } from "react";
 
 type FormValues = {
   note_id: string;
   title: string;
   description: string;
+  cover_image: string;
 };
 
 const EditNoteForm = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const fileRef = useRef<HTMLInputElement | null>(null);
+  const [previewImg, setPreviewImg] = useState<null | string>(null);
   const [updateNote, { isLoading }] = useUpdateNoteMutation();
   const { data: oldNote } = useGetDetailNoteQuery(id!);
 
@@ -24,7 +29,10 @@ const EditNoteForm = () => {
     note_id: oldNote?._id || "",
     title: oldNote?.title || "",
     description: oldNote?.description || "",
+    cover_image: oldNote?.cover_image || "",
   };
+
+  const SUPPORTED_FORMATS = ["image/jpg", "image/jpeg", "image/png"];
 
   const NoteFormSchema = yup.object({
     title: yup
@@ -36,6 +44,16 @@ const EditNoteForm = () => {
       .string()
       .min(5, "Description must be at least 5 characters")
       .required("Description is required"),
+    cover_image: yup
+      .mixed()
+      .nullable()
+      .test("FILE_FORMAT", "File format is not supported", (value) => {
+        if (!value) return true;
+        if (value instanceof File) {
+          return SUPPORTED_FORMATS.includes(value.type);
+        }
+        return false;
+      }),
   });
 
   const handleSubmit = async (
@@ -53,6 +71,24 @@ const EditNoteForm = () => {
     }
   };
 
+  const handleImageChange = (
+    event: React.ChangeEvent<HTMLInputElement>,
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    const selectedImage = event.target.files![0];
+    if (selectedImage) {
+      setPreviewImg(URL.createObjectURL(selectedImage));
+      setFieldValue("cover_image", selectedImage);
+    }
+  };
+
+  const clearPreviewImg = (
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    setPreviewImg(null);
+    setFieldValue("cover_image", null);
+  };
+
   return (
     <section className="px-10">
       <h1 className="text-2xl font-semibold mb-5 text-center">
@@ -65,8 +101,9 @@ const EditNoteForm = () => {
         onSubmit={handleSubmit}
         enableReinitialize={true}
       >
-        {() => (
+        {({ setFieldValue }) => (
           <Form className="space-y-3">
+            {/* note_id */}
             <div>
               <Field
                 type="text"
@@ -76,6 +113,7 @@ const EditNoteForm = () => {
               />
               <StyledErrorMessage name="title" />
             </div>
+            {/* title */}
             <div>
               <label htmlFor="title" className="font-medium block">
                 Note Title
@@ -88,6 +126,7 @@ const EditNoteForm = () => {
               />
               <StyledErrorMessage name="title" />
             </div>
+            {/* description */}
             <div>
               <label htmlFor="description" className="font-medium block">
                 Note Description
@@ -100,6 +139,44 @@ const EditNoteForm = () => {
                 className="p-1 border-2 border-teal-600 w-full rounded focus:outline-none"
               />
               <StyledErrorMessage name="description" />
+            </div>
+            {/* cover_image */}
+            <div>
+              <div className="flex items-center justify-between">
+                <label htmlFor="cover_image" className="font-medium block">
+                  Cover Image <span className="text-xs">( optional )</span>
+                </label>
+                {previewImg && (
+                  <p
+                    className="text-base font-medium text-red-600 cursor-pointer select-none"
+                    onClick={() => clearPreviewImg(setFieldValue)}
+                  >
+                    Clear
+                  </p>
+                )}
+              </div>
+              <input
+                type="file"
+                id="cover_image"
+                name="cover_image"
+                ref={fileRef}
+                onChange={(event) => handleImageChange(event, setFieldValue)}
+                hidden
+              />
+              <div
+                className="flex items-center justify-center cursor-pointer border-2 border-dashed border-teal-600 text-teal-600 py-1 rounded h-50 active:scale-95 duration-300 relative overflow-hidden"
+                onClick={() => fileRef.current?.click()}
+              >
+                <HardDriveUpload className="z-20" />
+                {previewImg && (
+                  <img
+                    src={previewImg!}
+                    alt="preview"
+                    className="absolute top-0 left-0 w-full h-full object-cover opacity-60 z-10"
+                  />
+                )}
+              </div>
+              <StyledErrorMessage name="cover_image" />
             </div>
             <button
               type="submit"

@@ -25,6 +25,13 @@ const DetailPage = () => {
           </Link>
         </div>
         <div className="mt-5 p-3 border-t-4 border-t-teal-600 shadow-lg">
+          {note?.cover_image && (
+            <img
+              src={`${import.meta.env.VITE_API_URL}/${note?.cover_image}`}
+              alt={note?.title}
+              className="mb-10 h-64 w-full object-cover"
+            />
+          )}
           <h3 className="text-3xl font-semibold mb-2">{note?.title}</h3>
           <div className="flex gap-2 my-2">
             <p className="flex gap-1 text-sm font-medium text-gray-600">

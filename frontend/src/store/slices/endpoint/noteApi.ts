@@ -24,22 +24,41 @@ const noteApiSlice = apiSlice.injectEndpoints({
       }),
       providesTags: ["Note"],
     }),
-    createNote: builder.mutation({
-      query: (data: CreateNoteType) => ({
-        url: "/create",
-        method: "POST",
-        body: data,
-        credentials: "include",
-      }),
+    createNote: builder.mutation<void, CreateNoteType>({
+      query: (data) => {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        if (data.cover_image) {
+          formData.append("cover_image", data.cover_image);
+        }
+
+        return {
+          url: "/create",
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        };
+      },
       invalidatesTags: ["Note"],
     }),
+
     updateNote: builder.mutation<void, { id: string; data: EditNoteType }>({
-      query: ({ id, data }) => ({
-        url: `/update-note/${id}`,
-        method: "PUT",
-        body: data,
-        credentials: "include",
-      }),
+      query: ({ id, data }) => {
+        const formData = new FormData();
+        formData.append("title", data.title);
+        formData.append("description", data.description);
+        if (data.cover_image) {
+          formData.append("cover_image", data.cover_image);
+        }
+
+        return {
+          url: `/update-note/${id}`,
+          method: "PUT",
+          body: formData,
+          credentials: "include",
+        };
+      },
       invalidatesTags: ["Note"],
     }),
     deleteNote: builder.mutation({

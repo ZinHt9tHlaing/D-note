@@ -3,6 +3,7 @@ export interface NoteType {
   title: string;
   description: string;
   createdAt: string;
+  cover_image?: File | string;
 }
 
 export interface DetailNoteType extends NoteType {
@@ -12,6 +13,7 @@ export interface DetailNoteType extends NoteType {
 export interface CreateNoteType {
   title: string;
   description: string;
+  cover_image?: File | string;
 }
 
 export type EditNoteType = CreateNoteType;

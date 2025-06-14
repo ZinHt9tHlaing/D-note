@@ -3,6 +3,7 @@ const Note = require("../models/Note");
 
 exports.createNote = async (req, res) => {
   const { title, description } = req.body;
+  const cover_image = req.file;
 
   const errors = validationResult(req);
 
@@ -13,7 +14,11 @@ exports.createNote = async (req, res) => {
     });
   }
 
-  await Note.create({ title, description })
+  await Note.create({
+    title,
+    description,
+    cover_image: cover_image ? cover_image.path : "",
+  })
     .then((_) => {
       res.status(201).json({
         message: "Note created",
