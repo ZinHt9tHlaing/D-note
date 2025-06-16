@@ -1,5 +1,6 @@
 const { validationResult } = require("express-validator");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 exports.register = async (req, res) => {
@@ -33,6 +34,43 @@ exports.register = async (req, res) => {
       message: "User registration successful!",
       userId: user._id,
     });
+  } catch (error) {
+    console.log("error", err);
+    res.status(500).json({ message: "User registration failed!" });
+  }
+};
+
+exports.login = async (req, res) => {
+  const { email, password } = req.body;
+
+  try {
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        message: "Validation failed",
+        errorMessage: errors.array(),
+      });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (!existingUser) {
+      return res.status(404).json({ message: "User not found!" });
+    }
+
+    const comparedPassword = await bcrypt.compareSync(
+      password,
+      existingUser.password
+    );
+    if (!comparedPassword) {
+      return res.status(400).json({ message: "Invalid credentials!" });
+    }
+    const loginToken = jwt.sign(
+      { userId: existingUser._id },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
+    res.status(200).json({ message: "User login successful!", loginToken });
   } catch (error) {
     console.log("error", err);
     res.status(500).json({ message: "User registration failed!" });

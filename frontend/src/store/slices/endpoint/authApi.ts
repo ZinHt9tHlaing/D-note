@@ -1,9 +1,12 @@
 import { apiSlice } from "../apiSlice";
 
-interface RegisterProps {
+interface LoginProps {
   email: string;
-  username: string;
   password: string;
+}
+
+interface RegisterProps extends LoginProps {
+  username: string;
 }
 
 const authApiSlice = apiSlice.injectEndpoints({
@@ -13,9 +16,20 @@ const authApiSlice = apiSlice.injectEndpoints({
         url: "/auth/register",
         method: "POST",
         body: data,
+        credentials: "include",
       }),
+      invalidatesTags: ["Auth"],
+    }),
+    login: builder.mutation({
+      query: (data: LoginProps) => ({
+        url: "/auth/login",
+        method: "POST",
+        body: data,
+        credentials: "include",
+      }),
+      invalidatesTags: ["Auth"],
     }),
   }),
 });
 
-export const { useRegisterMutation } = authApiSlice;
+export const { useRegisterMutation, useLoginMutation } = authApiSlice;

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { body } = require("express-validator");
-const { register } = require("../controllers/authController");
+const { register, login } = require("../controllers/authController");
 const User = require("../models/User");
 
 router.post(
@@ -23,6 +23,21 @@ router.post(
       .withMessage("Password must be at least 4 characters!"),
   ],
   register
+);
+
+router.post(
+  "/login",
+  [
+    body("email")
+      .isEmail()
+      .withMessage("Invalid email address!")
+      .normalizeEmail(),
+    body("password")
+      .trim()
+      .isLength({ min: 4 })
+      .withMessage("Password must be at least 4 characters!"),
+  ],
+  login
 );
 
 module.exports = router;

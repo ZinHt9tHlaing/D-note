@@ -1,4 +1,4 @@
-import { Link } from "react-router";
+import { Link, NavLink } from "react-router";
 
 const Navbar = () => {
   return (
@@ -14,16 +14,26 @@ const Navbar = () => {
             Share Note
           </button>
         </Link>
-        <Link to={"/login"}>
-          <button className="bg-teal-600 text-white border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
-            Login
-          </button>
-        </Link>
-        <Link to={"/register"}>
-          <button className="text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
-            Register
-          </button>
-        </Link>
+        <NavLink
+          to={"/login"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-teal-600 text-white border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200"
+              : "text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200"
+          }
+        >
+          Login
+        </NavLink>
+        <NavLink
+          to={"/register"}
+          className={({ isActive }) =>
+            isActive
+              ? "bg-teal-600 text-white border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200"
+              : "text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200"
+          }
+        >
+          Register
+        </NavLink>
       </div>
     </nav>
   );
