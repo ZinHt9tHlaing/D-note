@@ -5,6 +5,9 @@ import MainLayout from "../layouts/MainLayout";
 import HomePage from "../pages/HomePage";
 import DetailPage from "../pages/DetailPage";
 import ErrorMessage from "../components/ErrorMessage";
+import RegisterForm from "../components/auth/RegisterForm";
+import LoginForm from "../components/auth/LoginForm";
+
 
 export const routers = createBrowserRouter([
   {
@@ -27,6 +30,14 @@ export const routers = createBrowserRouter([
       {
         path: "/note/:id",
         element: <DetailPage />,
+      },
+      {
+        path: "/register",
+        element: <RegisterForm />,
+      },
+      {
+        path: "/login",
+        element: <LoginForm />,
       },
     ],
   },

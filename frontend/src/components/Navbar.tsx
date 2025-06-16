@@ -8,10 +8,20 @@ const Navbar = () => {
           Dnote.io
         </h1>
       </Link>
-      <div>
+      <div className="flex gap-3">
         <Link to={"/create"}>
           <button className="text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
             Share Note
+          </button>
+        </Link>
+        <Link to={"/login"}>
+          <button className="bg-teal-600 text-white border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
+            Login
+          </button>
+        </Link>
+        <Link to={"/register"}>
+          <button className="text-teal-600 border-2 border-teal-600 px-2 py-1 cursor-pointer rounded hover:shadow-md hover:shadow-teal-200 active:scale-95 duration-200">
+            Register
           </button>
         </Link>
       </div>

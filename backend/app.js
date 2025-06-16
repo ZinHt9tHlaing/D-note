@@ -8,6 +8,7 @@ const dotenv = require("dotenv").config();
 
 // routes
 const noteRoutes = require("./routes/noteRoute");
+const authRoutes = require("./routes/authRoute");
 const {
   storageConfigure,
   fileFilterConfigure,
@@ -29,6 +30,7 @@ app.use(
   })
 );
 app.use(noteRoutes);
+app.use("/auth", authRoutes);
 
 mongoose
   .connect(process.env.MONGO_URL)
