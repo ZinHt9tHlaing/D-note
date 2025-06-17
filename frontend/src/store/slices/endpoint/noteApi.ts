@@ -46,6 +46,7 @@ const noteApiSlice = apiSlice.injectEndpoints({
     updateNote: builder.mutation<void, { id: string; data: EditNoteType }>({
       query: ({ id, data }) => {
         const formData = new FormData();
+        formData.append("note_id", data.note_id);
         formData.append("title", data.title);
         formData.append("description", data.description);
         if (data.cover_image) {

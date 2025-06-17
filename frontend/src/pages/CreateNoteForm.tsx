@@ -18,6 +18,7 @@ type FormValues = {
 const CreateNoteForm = () => {
   const navigate = useNavigate();
   const [previewImg, setPreviewImg] = useState<null | string>(null);
+  const [isUpload, setIsUpload] = useState<boolean>(false);
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [createNote, { isLoading }] = useCreateNoteMutation();
 
@@ -96,6 +97,7 @@ const CreateNoteForm = () => {
   ) => {
     setPreviewImg(null);
     setFieldValue("cover_image", null);
+    fileRef.current!.value = "";
   };
 
   return (
@@ -153,27 +155,49 @@ const CreateNoteForm = () => {
                   </p>
                 )}
               </div>
-              <input
-                type="file"
-                id="cover_image"
-                name="cover_image"
-                ref={fileRef}
-                onChange={(event) => handleImageChange(event, setFieldValue)}
-                hidden
-              />
-              <div
-                className="flex items-center justify-center cursor-pointer border-2 border-dashed border-teal-600 text-teal-600 py-1 rounded h-50 active:scale-95 duration-300 relative overflow-hidden"
-                onClick={() => fileRef.current?.click()}
-              >
-                <HardDriveUpload className="z-20" />
-                {previewImg && (
-                  <img
-                    src={previewImg!}
-                    alt="preview"
-                    className="absolute top-0 left-0 w-full h-full object-cover opacity-60 z-10"
+              {isUpload ? (
+                <p
+                  className="text-base font-medium text-red-600 cursor-pointer select-none active:scale-95 duration-200"
+                  onClick={() => setIsUpload(false)}
+                >
+                  Disable cover image
+                </p>
+              ) : (
+                <p
+                  className="text-base font-medium underline text-teal-600 cursor-pointer select-none active:scale-95 duration-200"
+                  onClick={() => setIsUpload(true)}
+                >
+                  Upload cover image here
+                </p>
+              )}
+              {isUpload && (
+                <>
+                  {" "}
+                  <input
+                    type="file"
+                    id="cover_image"
+                    name="cover_image"
+                    ref={fileRef}
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
+                    hidden
                   />
-                )}
-              </div>
+                  <div
+                    className="flex items-center justify-center cursor-pointer border-2 border-dashed border-teal-600 text-teal-600 py-1 rounded h-50 active:scale-95 duration-300 relative overflow-hidden"
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    <HardDriveUpload className="z-20" />
+                    {previewImg && (
+                      <img
+                        src={previewImg!}
+                        alt="preview"
+                        className="absolute top-0 left-0 w-full h-full object-cover opacity-60 z-10"
+                      />
+                    )}
+                  </div>
+                </>
+              )}
               <StyledErrorMessage name="cover_image" />
             </div>
             <button

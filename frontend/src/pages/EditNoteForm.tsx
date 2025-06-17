@@ -14,7 +14,7 @@ type FormValues = {
   note_id: string;
   title: string;
   description: string;
-  cover_image: string;
+  cover_image: File | string;
 };
 
 const EditNoteForm = () => {
@@ -22,6 +22,7 @@ const EditNoteForm = () => {
   const navigate = useNavigate();
   const fileRef = useRef<HTMLInputElement | null>(null);
   const [previewImg, setPreviewImg] = useState<null | string>(null);
+  const [isUpload, setIsUpload] = useState<boolean>(false);
   const [updateNote, { isLoading }] = useUpdateNoteMutation();
   const { data: oldNote } = useGetDetailNoteQuery(id!);
 
@@ -148,34 +149,61 @@ const EditNoteForm = () => {
                 </label>
                 {previewImg && (
                   <p
-                    className="text-base font-medium text-red-600 cursor-pointer select-none"
+                    className="text-base font-medium text-red-600 cursor-pointer select-none active:scale-95 duration-200"
                     onClick={() => clearPreviewImg(setFieldValue)}
                   >
                     Clear
                   </p>
                 )}
               </div>
-              <input
-                type="file"
-                id="cover_image"
-                name="cover_image"
-                ref={fileRef}
-                onChange={(event) => handleImageChange(event, setFieldValue)}
-                hidden
-              />
-              <div
-                className="flex items-center justify-center cursor-pointer border-2 border-dashed border-teal-600 text-teal-600 py-1 rounded h-50 active:scale-95 duration-300 relative overflow-hidden"
-                onClick={() => fileRef.current?.click()}
-              >
-                <HardDriveUpload className="z-20" />
-                {previewImg && (
-                  <img
-                    src={previewImg!}
-                    alt="preview"
-                    className="absolute top-0 left-0 w-full h-full object-cover opacity-60 z-10"
+              {!isUpload && oldNote?.cover_image ? (
+                <p
+                  className="text-base font-medium text-red-600 cursor-pointer select-none active:scale-95 duration-200"
+                  onClick={() => setIsUpload(true)}
+                >
+                  Disable cover image
+                </p>
+              ) : (
+                <p
+                  className="text-base font-medium underline text-teal-600 cursor-pointer select-none active:scale-95 duration-200"
+                  onClick={() => setIsUpload(false)}
+                >
+                  Upload cover image here
+                </p>
+              )}
+              {!isUpload && oldNote?.cover_image && (
+                <>
+                  <input
+                    type="file"
+                    id="cover_image"
+                    name="cover_image"
+                    ref={fileRef}
+                    onChange={(event) =>
+                      handleImageChange(event, setFieldValue)
+                    }
+                    hidden
                   />
-                )}
-              </div>
+                  <div
+                    className="flex items-center justify-center cursor-pointer border-2 border-dashed border-teal-600 text-teal-600 py-1 rounded h-50 active:scale-95 duration-300 relative overflow-hidden"
+                    onClick={() => fileRef.current?.click()}
+                  >
+                    <HardDriveUpload className="z-20" />
+                    {oldNote?.cover_image && (
+                      <img
+                        src={
+                          previewImg
+                            ? previewImg
+                            : `${import.meta.env.VITE_API_URL}/${
+                                oldNote?.cover_image
+                              }`!
+                        }
+                        alt="preview"
+                        className="absolute top-0 left-0 w-full h-full object-cover opacity-60 z-10"
+                      />
+                    )}
+                  </div>
+                </>
+              )}
               <StyledErrorMessage name="cover_image" />
             </div>
             <button

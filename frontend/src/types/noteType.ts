@@ -11,6 +11,7 @@ export interface DetailNoteType extends NoteType {
 }
 
 export interface CreateNoteType {
+  note_id: string;
   title: string;
   description: string;
   cover_image?: File | string;
